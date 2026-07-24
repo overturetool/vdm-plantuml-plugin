@@ -158,7 +158,7 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
             JSONObject provider = experimental.get("translateProvider");
 
             if (provider != null) {
-                JSONArray ids = provider.get("languageId");
+                JSONArray ids = provider.get("languages");
 
                 if (ids != null) {
                    ids.add(new JSONObject("name", "vdm2uml", "description", "VDM to UML"));
