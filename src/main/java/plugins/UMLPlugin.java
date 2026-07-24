@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.fujitsu.vdmj.lex.Dialect;
@@ -152,7 +151,7 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
     }
 
     @Override
-    public void setServerCapabilities(JSONObject capabilities) {
+    public void setLSPCapabilities(JSONObject capabilities) {
         JSONObject experimental = capabilities.get("experimental");
 
         if (experimental != null) {
@@ -162,8 +161,8 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
                 JSONArray ids = provider.get("languageId");
 
                 if (ids != null) {
-                    ids.add("vdm2uml");
-                    ids.add("uml2vdm");
+                   ids.add(new JSONObject("name", "vdm2uml", "description", "VDM to UML"));
+                   ids.add(new JSONObject("name", "uml2vdm", "description", "UML to VDM"));
                 }
             }
         }
