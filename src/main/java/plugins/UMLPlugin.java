@@ -106,7 +106,7 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
 
             PlantBuilder pBuilder = new PlantBuilder(classes);
             String fileName = "";
-            String name;
+            String name = null;
 
             if (isProject) {
                 String projectName = Paths.get(uri).getFileName().toString();
@@ -116,15 +116,31 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
                     cdef.apply(new UMLGenerator(), pBuilder);
                 }
             } else {
-                String className = Paths.get(uri).getFileName().toString();
-                className = className.substring(0, className.lastIndexOf('.'));
-                fileName = className;
-                name = fileName;
+                // String className = Paths.get(uri).getFileName().toString();
+                // className = className.substring(0, className.lastIndexOf('.'));
+                // fileName = className;
+                // name = fileName;
+                // for (TCClassDefinition cdef : classes) {
+                //     String cdefName = cdef.toString();
+                //     cdefName = cdefName.substring(cdefName.indexOf(" ") + 1, cdefName.indexOf("\n"));
+                //     if (cdefName.equalsIgnoreCase(className)) {
+                //         name = cdefName;
+                //         cdef.apply(new UMLGenerator(), pBuilder);
+                //     }
+                // }
+
+				/* The code above seems to look, crudely, for a class in the file that matches
+				 * the filename. Probably safer to process all classes in the file? */
+
                 for (TCClassDefinition cdef : classes) {
-                    String cdefName = cdef.toString();
-                    cdefName = cdefName.substring(cdefName.indexOf(" ") + 1, cdefName.indexOf("\n"));
-                    if (cdefName.equalsIgnoreCase(className)) {
-                        name = cdefName;
+                    if (cdef.location.file.toURI().equals(uri)) {
+
+						if (name == null)	// Use first class found
+						{
+							name = cdef.name.getName();
+							fileName = name;
+						}
+
                         cdef.apply(new UMLGenerator(), pBuilder);
                     }
                 }
