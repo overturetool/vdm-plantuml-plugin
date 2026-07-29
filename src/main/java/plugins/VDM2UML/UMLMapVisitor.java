@@ -177,7 +177,7 @@ public class UMLMapVisitor extends TCLeafTypeVisitor<Object, List<Object>, UMLCo
 	public List<Object> caseRecordType(TCRecordType node, UMLCost umlCost)
 	{
 		int i = 0;
-		for (TCField field : node.fields)
+		for (@SuppressWarnings("unused") TCField field : node.fields)
 		{
 			if (i < node.fields.size() - 1) 
 			{
