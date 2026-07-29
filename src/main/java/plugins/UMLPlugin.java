@@ -90,11 +90,12 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
         boolean isProject = false;
         try {
             JSONObject params = request.get("params");
-            File saveUri = Utils.uriToFile(params.get("saveUri"));
-            URI uri = URI.create(params.get("uri"));
 
-            if (uri != null) {
-                isProject = Files.isDirectory(Paths.get(uri));
+			File file = Utils.uriToFile(params.get("uri"));
+			File saveUri = Utils.uriToFile(params.get("saveUri"));
+
+            if (file != null) {
+                isProject = file.isDirectory();
             }
 
             TCPlugin tcPlugin = PluginRegistry.getInstance().getPlugin("TC");
@@ -109,7 +110,7 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
             String name = null;
 
             if (isProject) {
-                String projectName = Paths.get(uri).getFileName().toString();
+                String projectName = file.getName();
                 name = projectName;
                 fileName = projectName;
                 for (TCClassDefinition cdef : classes) {
@@ -133,7 +134,7 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
 				 * the filename. Probably safer to process all classes in the file? */
 
                 for (TCClassDefinition cdef : classes) {
-                    if (cdef.location.file.toURI().equals(uri)) {
+                    if (cdef.location.file.equals(file)) {
 
 						if (name == null)	// Use first class found
 						{
