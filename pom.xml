@@ -2,63 +2,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <version>4.8.0-SNAPSHOT</version>
     <groupId>dk.au.ece.vdmj</groupId>
     <artifactId>uml</artifactId>
-    <name>UML</name>
+	<packaging>pom</packaging>
+
+    <name>UML Plugins</name>
     <description>Translations between VDM++/VDMRT and PlantUML through VDMJ</description>
 
-    <properties>
-        <vdmj.version>4.8.0</vdmj.version>
-        <vdmj.snapshot>-SNAPSHOT</vdmj.snapshot>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>standard</id>
-            <properties>
-                <vdmj.precision>standard</vdmj.precision>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>dk.au.ece.vdmj</groupId>
-                    <artifactId>lsp</artifactId>
-                    <version>${vdmj.version}${vdmj.snapshot}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>dk.au.ece.vdmj</groupId>
-                    <artifactId>vdmj</artifactId>
-                    <version>${vdmj.version}${vdmj.snapshot}</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>highprecision</id>
-            <properties>
-                <vdmj.precision>high</vdmj.precision>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>dk.au.ece.vdmj</groupId>
-                    <artifactId>lsp</artifactId>
-                    <version>${vdmj.version}-P${vdmj.snapshot}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>dk.au.ece.vdmj</groupId>
-                    <artifactId>vdmj</artifactId>
-                    <version>${vdmj.version}-P${vdmj.snapshot}</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
+	<modules>
+		<module>standard</module>
+		<module>highprecision</module>
+	</modules>
 
     <developers>
         <developer>
@@ -87,71 +43,87 @@
         </dependency>
     </dependencies>
 
-
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>${project.artifactId}-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- bind to the packaging phase -->
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>
-                                ${project.artifactId}-${project.version}
-                            </finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-        </plugins>
+		<pluginManagement>
+			<plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <release>11</release>
+                    </configuration>
+                </plugin>
+               <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*Test.java</include>
+                        </includes>
+						<redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    </configuration>
+                </plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.6.0</version>
+					<configuration>
+						<descriptorRefs>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
+						<finalName>${project.artifactId}-${project.version}</finalName>
+						<appendAssemblyId>true</appendAssemblyId>
+					</configuration>
+					<executions>
+						<execution>
+							<id>make-assembly</id> <!-- this is used for inheritance merges -->
+							<phase>package</phase> <!-- bind to the packaging phase -->
+							<goals>
+								<goal>single</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.3.0</version>
+					<executions>
+						<execution>
+							<id>default-jar</id>
+							<phase>package</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+               <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                </plugin>
+        	</plugins>
+		</pluginManagement>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>../src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
