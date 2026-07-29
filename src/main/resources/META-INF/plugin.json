@@ -1,6 +1,0 @@
-{
-    "name": "uml",
-    "description": "PlantUML visualization plugin",
-    "dialects": ["vdmpp", "vdmrt"],
-    "precision": "${vdmj.precision}"
-}
