@@ -48,7 +48,7 @@ public class XMIOperation {
         else 
         {
             this.shortName = opName + "() == ()";
-            readyArgLine = "";
+            readyArgLine = "()";
         }
 
 
