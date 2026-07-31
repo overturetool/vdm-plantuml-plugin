@@ -1,15 +1,13 @@
 package plugins.UML2VDM;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
@@ -18,9 +16,8 @@ import org.xml.sax.InputSource;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import net.sourceforge.plantuml.LineLocationImpl;
-import net.sourceforge.plantuml.PSystemBuilder;
+import net.sourceforge.plantuml.SourceStringReader;
 import net.sourceforge.plantuml.StringLocated;
-import net.sourceforge.plantuml.api.ThemeStyle;
 import net.sourceforge.plantuml.classdiagram.ClassDiagram;
 import net.sourceforge.plantuml.core.Diagram;
 import net.sourceforge.plantuml.xmi.XmiClassDiagramStar;
@@ -40,10 +37,11 @@ public class Uml2vdmMain {
 
 	}
 
-	public String run()
+	public String run() throws Exception
 	{
 		try 
 		{
+			/***
 			List<String> source = new ArrayList<>();
 			
 			try (BufferedReader br = new BufferedReader(new FileReader(pumlFile))) {
@@ -53,6 +51,18 @@ public class Uml2vdmMain {
 			List<StringLocated> sourceLocated = convert(source);
 			PSystemBuilder pBuilder = new PSystemBuilder();
 			Diagram diagram = pBuilder.createPSystem(ThemeStyle.LIGHT_REGULAR, null, sourceLocated, null);
+
+			***/
+
+			String source = Files.readString(pumlFile.toPath());
+			SourceStringReader reader = new SourceStringReader(source);
+			Diagram diagram = reader.getBlocks().get(0).getDiagram();
+
+			if (!(diagram instanceof ClassDiagram))
+			{
+				throw new Exception("createPSystem returned " + diagram.getClass().getName() + ", expected ClassDiagram");
+			}
+
 			XmiClassDiagramStar xmiDiagram = new XmiClassDiagramStar((ClassDiagram) diagram);
 
 			OutputStream os = new ByteArrayOutputStream();
@@ -81,6 +91,7 @@ public class Uml2vdmMain {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			throw e;
 		}
 
 		return "";

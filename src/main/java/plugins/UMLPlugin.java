@@ -72,6 +72,12 @@ public class UMLPlugin extends AnalysisPlugin implements EventListener {
 
             File uri = Utils.uriToFile(params.get("uri"));
             File saveUri = Utils.uriToFile(params.get("saveUri"));
+
+			if (uri.isDirectory())
+			{
+				uri = new File(uri.getAbsolutePath() + ".puml");
+			}
+
             Uml2vdmMain puml = new Uml2vdmMain(uri, saveUri);
             puml.run();
 
