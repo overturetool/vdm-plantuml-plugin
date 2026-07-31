@@ -1,6 +1,9 @@
 package plugins.UML2VDM;
 
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.w3c.dom.Element;
 
 public class XMIOperation {
@@ -15,8 +18,81 @@ public class XMIOperation {
     private String[] args;
 
     public XMIOperation(Element aElement)
-    {     
+    {
         String xmiName = (aElement.getAttribute("name"));
+
+		if (xmiName.contains(" «function»"))
+        {
+            this.opType = OpTypes.function;
+            xmiName = xmiName.replace(" «function»", "");
+        }	
+        else
+		{
+            this.opType = OpTypes.operation;
+		}
+
+		this.visibility = visibility(aElement);
+
+		// +A() : A
+		// +A(nat) : A
+		// +op()
+		// +op(nat)
+		// +op(nat, nat)
+		// -f() : nat <<function>>
+		// -f(nat) : nat <<function>>
+		// -f(nat, nat) : nat <<function>>
+
+		Pattern P = Pattern.compile("(\\w+)\\((.*)\\)(\\s*:\\s*(.+))?");
+		Matcher m = P.matcher(xmiName);
+
+		if (m.matches())
+		{
+			String name = m.group(1);
+			String ptypes = m.group(2);
+			String rtype = m.group(4);
+
+			if (rtype == null) rtype = "()";
+
+			// Turn "nat, char, int" ptypes into "a, b, c" pnames
+			String pnames = "";
+
+			if (!ptypes.isEmpty())
+			{
+				String[] parts = ptypes.split("\\s*,\\s*");
+				char arg = 'a';
+				String sep = "";
+				String sep2 = "";
+				String types = "";
+
+				for (int a=0; a < parts.length; a++)
+				{
+					pnames = pnames + sep + arg;
+					types = types + sep2 + parts[a];
+					sep = ", ";
+					sep2 = " * ";
+					arg = (char)(arg + 1);
+				}
+
+				ptypes = types;
+			}
+			else
+			{
+				ptypes = "()";
+			}
+
+			if (opType == OpTypes.function)
+			{
+				signature = name + ": " + ptypes + " -> " + rtype;
+				shortName = name + "("  + pnames + ") == is not yet specified";
+			}
+			else
+			{
+				signature = name + ": " + ptypes + " ==> " + rtype;
+				shortName = name + "("  + pnames + ") == is not yet specified";
+			}
+		}
+
+/***
         hasShortName = false;
         
         if (aElement.getAttribute("name").contains("«function»"))
@@ -69,10 +145,10 @@ public class XMIOperation {
             this.signature = opName + " : " + readyArgLine + " ->" + opOut;
         
         this.visibility = visibility(aElement);
-    
+***/
     }
 
-    private String vdmArgline()
+	private String vdmArgline()
     {
         if (!(args == null))
         {
