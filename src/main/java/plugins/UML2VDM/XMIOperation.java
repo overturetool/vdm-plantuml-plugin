@@ -83,12 +83,12 @@ public class XMIOperation {
 			if (opType == OpTypes.function)
 			{
 				signature = name + ": " + ptypes + " -> " + rtype;
-				shortName = name + "("  + pnames + ") == is not yet specified";
+				shortName = name + "("  + pnames + ") == is not yet specified;";
 			}
 			else
 			{
 				signature = name + ": " + ptypes + " ==> " + rtype;
-				shortName = name + "("  + pnames + ") == is not yet specified";
+				shortName = name + "("  + pnames + ") == is not yet specified;";
 			}
 		}
 
